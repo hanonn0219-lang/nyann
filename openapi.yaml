@@ -1,0 +1,68 @@
+openapi: 3.1.0
+info:
+  title: Magic English Buddy API (Vercel Starter)
+  version: "1.0.0"
+  description: >
+    GPTs Actions 用の最小API。フラッシュカード（CSV/PDF）を生成してダウンロードURLを返します。
+
+servers:
+  - url: https://YOUR_VERCEL_URL   # 例: https://magic-english-buddy.vercel.app (末尾スラなし)
+
+paths:
+  /api/v1/health:
+    get:
+      operationId: getHealth
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+
+  /api/v1/flashcards:
+    post:
+      operationId: generateFlashcards
+      summary: Generate flashcards (max 12)
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FlashcardRequest"
+      responses:
+        "200":
+          description: Flashcards generated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FlashcardResponse"
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    FlashcardRequest:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          maxItems: 12
+          items:
+            type: object
+            required: [english, japanese]
+            properties:
+              english: { type: string, example: "Hello." }
+              japanese: { type: string, example: "こんにちは。" }
+              ipa: { type: string, nullable: true, example: "həˈloʊ" }
+              example: { type: string, nullable: true, example: "Hello, my name is Ken." }
+
+    FlashcardResponse:
+      type: object
+      properties:
+        csv_url: { type: string, format: uri, example: "https://YOUR_VERCEL_URL/api/v1/files.csv?d=..." }
+        pdf_url: { type: string, format: uri, example: "https://YOUR_VERCEL_URL/api/v1/files.pdf?d=..." }

@@ -1,0 +1,12 @@
+{
+  "name": "meb-vercel-starter",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "vercel-build": "echo \"No build step\""
+  },
+  "dependencies": {
+    "pdfkit": "0.15.0"
+  }
+}
